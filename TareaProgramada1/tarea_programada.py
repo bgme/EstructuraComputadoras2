@@ -9,6 +9,8 @@ import numpy as np
 
 miss = 0
 hit = 0
+hola = 1
+prueba = 0
 
 asociatividad = sys.argv[1]
 cache_size = int(sys.argv[2])
@@ -25,7 +27,7 @@ for line in f:
 	index = info[6:8]
 	tag = info[0:6]
         wr = info[-2:]
-        #valor = binascii.unhexlify(tag)
+        
         
 	#print valor
 	print tag, index, wr
