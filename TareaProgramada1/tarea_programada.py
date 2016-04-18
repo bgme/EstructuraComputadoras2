@@ -6,6 +6,7 @@ import binascii
 memoria = [['hola','lol','jeje'],[7,5,6]]
 miss = 0
 hit = 0
+hola = 1
 
 f=open('pruebamemoria','r')
 
