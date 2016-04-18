@@ -13,9 +13,9 @@ prueba = 0
 
 asociatividad = sys.argv[1]
 cache_size = int(sys.argv[2]) #Tamano del cache en KB
-block_size = int(sys.argv[3]) #Tamano del bloque en B
+block_size = int(sys.argv[3]) #Tamano del bloque en palabras
 
-num_posiciones = cache_size * 1024 / block_size
+num_posiciones = cache_size * 1024 / block_size * 8 #numero de bloques de cache de N palabras de 1 byte
 
 memoria = np.empty((num_posiciones, 2))
 
