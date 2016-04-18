@@ -5,7 +5,6 @@ import binascii
 import sys
 import numpy as np
 
-#memoria = [['hola','lol','jeje'],[7,5,6]]
 
 miss = 0
 hit = 0
@@ -13,10 +12,12 @@ hola = 1
 prueba = 0
 
 asociatividad = sys.argv[1]
-cache_size = int(sys.argv[2])
-block_size = int(sys.argv[3])
+cache_size = int(sys.argv[2]) #Tamano del cache en KB
+block_size = int(sys.argv[3]) #Tamano del bloque en B
 
-memoria = np.empty((cache_size, block_size))
+num_posiciones = cache_size * 1024 / block_size
+
+memoria = np.empty((num_posiciones, 2))
 
 print (memoria)
 
