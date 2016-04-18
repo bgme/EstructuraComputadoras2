@@ -4,6 +4,7 @@ import math
 import binascii
 import sys
 import numpy as np
+from math import log
 
 
 miss = 0
@@ -12,10 +13,22 @@ hola = 1
 prueba = 0
 
 asociatividad = sys.argv[1]
-cache_size = int(sys.argv[2])
-block_size = int(sys.argv[3])
+cache_size = int(sys.argv[2]) #Tamano del cache en KB
+block_size = int(sys.argv[3]) #Tamano del bloque en B
 
-memoria = np.empty((cache_size, block_size))
+num_posiciones = cache_size * 1024 / block_size #numero de bloques de cache de N palabras de 1 byte c/u
+
+byteoffset = int(math.log(block_size,2))
+
+if asociatividad == 'directo' or asociatividad == 'Directo':
+	memoria = np.empty((num_posiciones, 2)) #Espacio para tag y el indice
+elif asociatividad == '2-way' or asociatividad == '2-Way':
+	memoria = np.empty((num_posiciones, 3)) #Espacio para index y los dos tags
+elif asociatividad == '4-way' or asociatividad == '4-Way':
+	memoria = np.empty((num_posiciones, 5)) #Espacio para index y los 4 tags
+
+##Orden en memoria
+##memoria [index, tag1, tag2, tag3, tag4]
 
 #print (memoria)
 
