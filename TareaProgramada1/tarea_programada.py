@@ -6,6 +6,7 @@ import sys
 import numpy as np
 from math import log
 
+
 miss = 0
 hit = 0
 hola = 1
@@ -29,27 +30,36 @@ elif asociatividad == '4-way' or asociatividad == '4-Way':
 ##Orden en memoria
 ##memoria [index, tag1, tag2, tag3, tag4]
 
-print (memoria)
+#print (memoria)
 
 f=open('pruebamemoria','r')
 
+
 for line in f:
-	info = line;
-	index = info[6:8]
-	tag = info[0:6]
-        wr = info[-2:]
+	wr = line[-2:]
+        dir_bin = bin(int(line[0:8],16))
+	index = dir_bin[-3:]  #esto se tiene que cambiar por variables que dependen de los tamanos introducidos en la consola
+	tag = dir_bin[2:-3]  #igual aqui
+	#print dir_bin, index, tag
+        #print int(index,2)
         
         
-	#print valor
-	print tag, index, wr
 	#print wr
-        #if tag in memoria[0]:
-	#	hit = hit+1
-	#else:
-	#	miss = miss+1;
-	#	memoria[0][1]=tag;
+        #seccion que revisa cantidad de hits y misses y acomoda el dato en el bloque correspondiente
+  
+	#print float(tag),memoria[(int(index,2),1)]
+	
+	if float(tag) == memoria[(int(index,2),1)]:
+		hit = hit+1
+	else:
+		miss = miss+1
+		memoria[(int(index,2),1)] = float(tag)
 		
-f.close()	
+f.close()
+
+
+np.set_printoptions(precision=8)
+print memoria
 
 
 print 'misses: %f, hits: %f' %(miss,hit)
