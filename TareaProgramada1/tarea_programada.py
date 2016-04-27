@@ -4,6 +4,7 @@ import math
 import binascii
 import sys
 import numpy as np
+import random
 from math import log
 
 
@@ -69,14 +70,27 @@ for line in f:
 		else:
 			miss = miss+1
 			memoria[(int(index,2),1)] = float(tag)
-	#elif caso == 2:
-	#elif caso == 3:
+####### SE LE AGREGA ESTA SECCION PARA ASOCIATIVIDAD 2 O 4. ##########
+	elif caso == 2:
+		if (float(tag) == memoria[(int(index,2),1)] or float(tag) == memoria[(int(index,2),2)]) :
+			hit = hit+1
+		else:
+			miss = miss+1
+			memoria[(int(index,2),random.randint(1,2))] = float(tag)
+	elif caso == 3:
+		if (float(tag) == memoria[(int(index,2),1)] or float(tag) == memoria[(int(index,2),2)] or float(tag) == memoria[(int(index,2),3)] or float(tag) == memoria[(int(index,2),4)]) :
+			hit = hit+1
+		else:
+			miss = miss+1
+			memoria[(int(index,2),random.randint(1,4))] = float(tag)
+			#print random.randint(1,4)
 		
+#################################################################################		
 f.close()
 
 
-np.set_printoptions(precision=8,edgeitems=5)
-print memoria
+#np.set_printoptions(precision=8,edgeitems=5)
+#print memoria
 
 
 print 'misses: %f, hits: %f' %(miss,hit)
