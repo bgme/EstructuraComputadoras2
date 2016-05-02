@@ -1,9 +1,9 @@
-##Universidad de Costa Rica  
-#Escuela de Ingeniería Eléctrica  
-#Ricardo Quirós Redondo/ Berni Mora Esobar  
+#Universidad de Costa Rica  
+##Escuela de Ingeniería Eléctrica  
+##Ricardo Quirós Redondo/ Berni Mora Esobar  
 -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
 
-#Instrucciones para ejecución del programa: tarea_programada.py
+##Instrucciones para ejecución del programa: tarea_programada.py
 
 1. Para la correcta ejecución del programa se debe tener instalado el paquete: python-numpy
 2. El programa lee un archivo llamado "aligned.trace" el cuál debe estar disponible en la misma carpeta que se encuentre el ejecutable del programa.
