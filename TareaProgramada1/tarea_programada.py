@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 
 import math
 import binascii
@@ -7,13 +8,18 @@ import numpy as np
 import random
 from math import log
 
-
+#se inicializan los contadores de misses y hits
 miss = 0
 hit = 0
 
-asociatividad = sys.argv[1]
-cache_size = int(sys.argv[2]) #Tamano del cache en KB
-block_size = int(sys.argv[3]) #Tamano del bloque en B
+#manejo de excepción en caso de tener error en los parametros
+try:
+	asociatividad = sys.argv[1]
+	cache_size = int(sys.argv[2]) #Tamano del cache en KB
+	block_size = int(sys.argv[3]) #Tamano del bloque en B
+except:
+	print '\033[1;41mError:\033[1;m'+' Parámetros incorrectos, deben indicarse: tipo de asociatividad, tamaño de cache en kB y tamaño del bloque en B.'
+	sys.exit(1)
 
 ##Orden en memoria
 ##memoria [index, tag1, tag2, tag3, tag4]
@@ -22,17 +28,19 @@ num_posiciones = cache_size * 1024 / block_size #numero de bloques de cache de N
 
 #aqui se elige la cantidad de bits para cada parte de la direccion (index,tag,byte_offset)
 num_index = int(math.log(num_posiciones,2)) 
+offset=math.log(block_size,2)
 num_byteoffset = int(math.log(block_size,2))
 num_tag = 32 -(num_index+num_byteoffset)
 
-print "Bits de index: %s , Bits de offset: %s , Bits de tag: %s" %(num_index, num_byteoffset, num_tag)
+#error si el tamaño de bloque no es correcto
+if offset.is_integer() == False:
+	print '\033[1;41mError:\033[1;m'+' El tamaño de bloque debe ser una potencia de 2.Ej:1,2,4,8,16,32,64...'
+	sys.exit(1)
 
 
-
-#se le agregan los casos para mayor facilidad de seleccion en el algoritmo posterior
-if asociatividad == 'directo' or asociatividad == 'Directo':
+if asociatividad == 'directo' or asociatividad == 'Directo': #resolución del problema para directo
+	print "Bits de index: %s , Bits de offset: %s , Bits de tag: %s" %(num_index, num_byteoffset, num_tag)
 	memoria = np.empty((num_posiciones, 2)) #Espacio para tag y el indice
-	#caso = 1
 	f=open('aligned.trace','r')
 	for line in f:
 		dir_bin = bin(int(line[0:8],16))
@@ -44,9 +52,9 @@ if asociatividad == 'directo' or asociatividad == 'Directo':
 			miss = miss+1
 			memoria[(int(index,2),1)] = float(tag)
 	f.close()
-elif asociatividad == '2-way' or asociatividad == '2-Way':
-	memoria = np.empty((num_posiciones, 3)) #Espacio para index y los dos tags
-	#caso = 2
+elif asociatividad == '2-way' or asociatividad == '2-Way': #resolución del problema para 2-way
+	print "Bits de index: %s , Bits de offset: %s , Bits de tag: %s" %(num_index, num_byteoffset, num_tag)
+	memoria = np.empty((num_posiciones, 3)) #Espacio para indice y los dos tags
 	f=open('aligned.trace','r')
 	for line in f:
 		dir_bin = bin(int(line[0:8],16))
@@ -58,9 +66,9 @@ elif asociatividad == '2-way' or asociatividad == '2-Way':
 			miss = miss+1
 			memoria[(int(index,2),random.randint(1,2))] = float(tag)
 	f.close()
-elif asociatividad == '4-way' or asociatividad == '4-Way':
-	memoria = np.empty((num_posiciones, 5)) #Espacio para index y los 4 tags
-	#caso = 3
+elif asociatividad == '4-way' or asociatividad == '4-Way': #resolución del problema para 4-way
+	print "Bits de index: %s , Bits de offset: %s , Bits de tag: %s" %(num_index, num_byteoffset, num_tag)
+	memoria = np.empty((num_posiciones, 5)) #Espacio para el indice y los 4 tags
 	f=open('aligned.trace','r')
 	for line in f:
 		dir_bin = bin(int(line[0:8],16))
@@ -72,5 +80,8 @@ elif asociatividad == '4-way' or asociatividad == '4-Way':
 			miss = miss+1
 			memoria[(int(index,2),random.randint(1,4))] = float(tag)
 	f.close()
+else: #Mensaje de error en caso de no introducir adecuadamente la asocitividad
+	print '\033[1;41mError:\033[1;m'+' El valor de asociatividad no es correcto, intente con: directo, 2-way o 4-way.'
+	sys.exit(1)
 
-print 'misses: %f, hits: %f' %(miss,hit)
+print 'misses: %f, hits: %f' %(miss,hit) #impresión de la cantidad de misses y hits de la ejecución
