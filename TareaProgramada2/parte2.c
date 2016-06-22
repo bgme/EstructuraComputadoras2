@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <math.h>
 #include <time.h>
+#include <string.h>
 
 int main(int argc, char *argv[]){
 
@@ -13,18 +14,21 @@ int main(int argc, char *argv[]){
 	int stop1, i, j, k;
 	int newline=0;
 	int l=0;
+	double time;
 
-	for(i=0;i<size;i++){ //Necesario porque en simulaciones se encontro que no se inicializaban todas las posiciones en false
-
-	primes[i]=false;
-	}
+	memset(primes,false,size); //Inicializando el vector en false
 	
 	for(i=2;i<=stop;i++){
-		stop1= floor(size/i); 
-		for(j=i;j<=stop1;j++){	
-			primes[i*j]=true;
-		}			
+		if(!primes[i]){
+			stop1= floor(size/i); 
+			for(j=i;j<=stop1;j++){	
+				primes[i*j]=true;
+			}		
+		}	
+		
 	}
+
+	time = ((double)clock()-start)/ CLOCKS_PER_SEC*1000;
 
 	printf("Los primeros números primos son:\n");
 	for(i=2;i<=size;i++){		
@@ -39,7 +43,8 @@ int main(int argc, char *argv[]){
 		}				
 	}
 
-	printf("Se encontraron %d números primos, y el tiempo transcurrido fue de %f milisegundos \n",l,((double)clock() - start)/ CLOCKS_PER_SEC*1000);
+	printf("Se encontraron %d números primos, y el tiempo transcurrido fue de %f milisegundos \n",l,time);
+
 	
    return 0;
 }
