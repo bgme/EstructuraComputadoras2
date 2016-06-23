@@ -60,7 +60,6 @@ int main(int argc, char *argv[]){
 			}	
 		
 		}
-		
 		for(an_id = 1; an_id < num_procs; an_id++) { //Recibo los vectores resultado de cada proceso
 		    
 		   	ierr = MPI_Recv( &global_primes, size, MPI_INT, MPI_ANY_SOURCE, 3, MPI_COMM_WORLD, &status);
@@ -85,10 +84,11 @@ int main(int argc, char *argv[]){
 			//}				
 		}
 		
-		//MPI_Barrier( MPI_COMM_WORLD );
+		
 		time = ((double)clock()-start)/ CLOCKS_PER_SEC*1000;
 		printf("Se encontraron %d números primos, y el tiempo transcurrido fue de %f milisegundos. Se crearon %i procesos \n",l,time,num_procs);
 		
+
 		
 	}else{
 		for(an_id = 1; an_id < num_procs; an_id++) {
@@ -113,9 +113,9 @@ int main(int argc, char *argv[]){
 			ierr = MPI_Send( &primes, size, MPI_INT, 0, 3, MPI_COMM_WORLD);
 			printf("Soy el proceso %i e inicio en %i y finalizo en %i \n",my_id,inicio_id,final_id);
 		}
-
+		
 
 	}
-	MPI_Finalize();
+			ierr = MPI_Finalize();
    return 0;
 }
