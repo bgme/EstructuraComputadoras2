@@ -26,11 +26,11 @@ a = 1
 
 cacheL11 = np.empty((512, 3))
 cacheL12 = np.empty((512, 3))
-cacheL2 = np.empty((4096, 2))
+cacheL2 = np.empty((4096, 3))
 
 #Estados: M = 00, E = 01, S = 10, I = 11
 
-f=open('pruebamemoria','r')
+f=open('aligned.trace','r')
 
 for line in f:
 	dir_bin = bin(int(line[0:8],16))
@@ -60,10 +60,11 @@ for line in f:
 				if mem_L1[(int(index_L1,2),2)] == 11:
 					mem_L1[(int(index_L1,2),2)] == 10;
 					N_mem_L1[(int(index_L1,2),2)] == 10;
-					
-					#el otro cache detecta que se quiere leer y por lo tanto envia el valor correcto y se pasa a el estado S 
+					cacheL2[(int(index_L2,2),2)] == 10;
+					#el otro cache detecta que se quiere leer y por lo tanto envia el valor correcto al otro L1 y al L2, y se pasa a el estado S 
 				#de lo contrario no se cambia el estado
 			else:
+				
 				#si no hay copias:
 				if float(tag_L1) != N_mem_L1[(int(index_L1,2),1)]:
 					if float(tag_L2) == cacheL2[(int(index_L2,2),1)]: #si hay copia en L2 se toma de ahi y se coloca el estado E
@@ -74,6 +75,8 @@ for line in f:
 						cacheL2[(int(index_L2,2),1)] = float(tag_L2);
 						mem_L1[(int(index_L1,2),1)] = float(tag_L1);
 						mem_L1[(int(index_L1,2),2)] = 01;
+						cacheL2[(int(index_L2,2),2)] == 01;
+						
 						
 				#si hay copias:
 				elif float(tag_L1) == N_mem_L1[(int(index_L1,2),1)]:
@@ -83,13 +86,15 @@ for line in f:
 						mem_L1[(int(index_L1,2),1)] = float(tag_L1);
 						mem_L1[(int(index_L1,2),2)] = 10;
 						N_mem_L1[(int(index_L1,2),2)] = 10;
-				
+						cacheL2[(int(index_L2,2),2)] == 10;
+						
 					#si es modified:	
 					elif N_mem_L1[(int(index_L1,2),2)] == 00:
 						mem_L1[(int(index_L1,2),1)] = float(tag_L1)
 						mem_L1[(int(index_L1,2),2)] = 10
 						N_mem_L1[(int(index_L1,2),2)] = 10
-						#se cambia el estado a shared
+						cacheL2[(int(index_L2,2),2)] == 10;
+						#se cambia el estado a shared (se escribe primero el dato en L2 y luego en el otro cache)
 									
 		
 	elif accion == 'S':
@@ -97,12 +102,15 @@ for line in f:
 			if float(tag_L1) == mem_L1[(int(index_L1,2),1)]:
 				#if mem_L1[(int(index_L1,2),2)] == 00:
 					#se mantiene estado
-				if mem_L1[(int(index_L1,2),2)] == 01: #si es exclusivo para a ser modified
+				if mem_L1[(int(index_L1,2),2)] == 01: #si es exclusivo pasa a ser modified (y la copia en L2  se invalida)
 					mem_L1[(int(index_L1,2),2)] = 00
+					cacheL2[(int(index_L2,2),2)] == 11;
+					
 					
 				elif mem_L1[(int(index_L1,2),2)] == 10: #si es shared pasa a ser modified y la otra copia pasa a ser Invalid
 					mem_L1[(int(index_L1,2),2)] = 00
 					N_mem_L1[(int(index_L1,2),2)] = 11
+					cacheL2[(int(index_L2,2),2)] == 11
 			#miss
 			else:
 				if float(tag_L1) != N_mem_L1[(int(index_L1,2),1)]: #si no hay mas copias
@@ -113,25 +121,26 @@ for line in f:
 						cacheL2[(int(index_L2,2),1)] = float(tag_L2)
 						mem_L1[(int(index_L1,2),1)] = float(tag_L1)
 						mem_L1[(int(index_L1,2),2)] = 00
-
+						cacheL2[(int(index_L2,2),2)] == 11
+				#si hay copias:
 				elif float(tag_L1) == N_mem_L1[(int(index_L1,2),1)]:
 					if N_mem_L1[(int(index_L1,2),2)] == 00:
 						mem_L1[(int(index_L1,2),2)] = 00
 						N_mem_L1[(int(index_L1,2),2)] = 11
+						cacheL2[(int(index_L2,2),2)] == 11
 		
 					elif N_mem_L1[(int(index_L1,2),2)] == 01 or N_mem_L1[(int(index_L1,2),2)] == 10:
 						mem_L1[(int(index_L1,2),2)] = 00
 						N_mem_L1[(int(index_L1,2),2)] = 11
+						cacheL2[(int(index_L2,2),2)] == 11
 						
-			
-	print  a				
-	print 'Estado cache activo: ' 
-	print mem_L1[(int(index_L1,2),2)] 
-	print 'Estado cache inactivo: '
-	print N_mem_L1[(int(index_L1,2),2)]
-	print ' '
-	#print 'Estado 2/1 : ' 
-	#print N_mem_L1[(int(index_L1,2),2)]	
+	if a >= 49642108:		
+		print 'Estado cache activo: ' 
+		print mem_L1[(int(index_L1,2),2)] 
+		print 'Estado cache inactivo: '
+		print N_mem_L1[(int(index_L1,2),2)]
+		print ' '
+		
 	
 	#cambia el procesador en ejecucion por cada ciclo de for
 	T = CPU_active
